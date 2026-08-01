@@ -1,0 +1,48 @@
+The ``5-text_indentation`` module
+====================================
+
+Import the function::
+
+    >>> text_indentation = __import__('5-text_indentation').text_indentation
+
+Two new lines are added after each ``.``, ``?`` and ``:``::
+
+    >>> text_indentation("Hello. World? Bye: end")
+    Hello.
+    <BLANKLINE>
+    World?
+    <BLANKLINE>
+    Bye:
+    <BLANKLINE>
+    end
+
+An empty string prints nothing::
+
+    >>> text_indentation("")
+
+A string with no punctuation is printed as a single line::
+
+    >>> text_indentation("Hello World")
+    Hello World
+
+Leading and trailing spaces around punctuation are stripped from
+each printed line::
+
+    >>> text_indentation("Hello .   World")
+    Hello .
+    <BLANKLINE>
+    World
+
+``text`` must be a string::
+
+    >>> text_indentation(89)
+    Traceback (most recent call last):
+    TypeError: text must be a string
+
+    >>> text_indentation(None)
+    Traceback (most recent call last):
+    TypeError: text must be a string
+
+    >>> text_indentation(["Hello."])
+    Traceback (most recent call last):
+    TypeError: text must be a string
