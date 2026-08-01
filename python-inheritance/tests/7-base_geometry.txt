@@ -15,19 +15,48 @@ Create an instance:
 ``integer_validator`` accepts positive integers:
     >>> bg.integer_validator("my_int", 12)
     >>> bg.integer_validator("width", 89)
+    >>> bg.integer_validator("age", 1)
 
 ``integer_validator`` rejects non-integers:
     >>> bg.integer_validator("name", "John")
     Traceback (most recent call last):
     TypeError: name must be an integer
 
+    >>> bg.integer_validator("age", "4")
+    Traceback (most recent call last):
+    TypeError: age must be an integer
+
     >>> bg.integer_validator("name", 3.14)
     Traceback (most recent call last):
     TypeError: name must be an integer
 
+    >>> bg.integer_validator("age", 13.5)
+    Traceback (most recent call last):
+    TypeError: age must be an integer
+
     >>> bg.integer_validator("name", True)
     Traceback (most recent call last):
     TypeError: name must be an integer
+
+    >>> bg.integer_validator("age", True)
+    Traceback (most recent call last):
+    TypeError: age must be an integer
+
+    >>> bg.integer_validator("age", None)
+    Traceback (most recent call last):
+    TypeError: age must be an integer
+
+    >>> bg.integer_validator("age", (4,))
+    Traceback (most recent call last):
+    TypeError: age must be an integer
+
+    >>> bg.integer_validator("age", [3])
+    Traceback (most recent call last):
+    TypeError: age must be an integer
+
+    >>> bg.integer_validator("age", (3, 4))
+    Traceback (most recent call last):
+    TypeError: age must be an integer
 
 ``integer_validator`` rejects values less than or equal to 0:
     >>> bg.integer_validator("age", 0)
@@ -37,3 +66,16 @@ Create an instance:
     >>> bg.integer_validator("distance", -4)
     Traceback (most recent call last):
     ValueError: distance must be greater than 0
+
+``integer_validator`` requires both a name and a value:
+    >>> try:
+    ...     bg.integer_validator()
+    ... except TypeError:
+    ...     print("TypeError raised")
+    TypeError raised
+
+    >>> try:
+    ...     bg.integer_validator("age")
+    ... except TypeError:
+    ...     print("TypeError raised")
+    TypeError raised
