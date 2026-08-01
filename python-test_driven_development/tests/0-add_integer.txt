@@ -1,0 +1,78 @@
+The ``0-add_integer`` module
+=============================
+
+Import the function::
+
+    >>> add_integer = __import__('0-add_integer').add_integer
+
+Basic addition of two integers::
+
+    >>> add_integer(1, 2)
+    3
+
+    >>> add_integer(100, -2)
+    98
+
+Using the default value of ``b``::
+
+    >>> add_integer(2)
+    100
+
+Floats are truncated (not rounded) to integers before being added::
+
+    >>> add_integer(100.3, -2)
+    98
+
+    >>> add_integer(2, 100.7)
+    102
+
+    >>> add_integer(-2.9, -2.9)
+    -4
+
+Both arguments equal to zero::
+
+    >>> add_integer(0, 0)
+    0
+
+Negative results::
+
+    >>> add_integer(-10, 3)
+    -7
+
+Errors when ``b`` is not a number::
+
+    >>> add_integer(4, "School")
+    Traceback (most recent call last):
+    TypeError: b must be an integer
+
+    >>> add_integer(1, None)
+    Traceback (most recent call last):
+    TypeError: b must be an integer
+
+    >>> add_integer(1, [1, 2])
+    Traceback (most recent call last):
+    TypeError: b must be an integer
+
+Errors when ``a`` is not a number::
+
+    >>> add_integer(None)
+    Traceback (most recent call last):
+    TypeError: a must be an integer
+
+    >>> add_integer("1", 2)
+    Traceback (most recent call last):
+    TypeError: a must be an integer
+
+    >>> add_integer([1, 2], 2)
+    Traceback (most recent call last):
+    TypeError: a must be an integer
+
+Booleans are not accepted as integers::
+
+    >>> add_integer(True, 2)
+    Traceback (most recent call last):
+    TypeError: a must be an integer
+
+    >>> add_integer(1, False)
+    Traceback (most recent call last):
+    TypeError: b must be an integer

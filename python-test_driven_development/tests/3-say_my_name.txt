@@ -1,0 +1,64 @@
+The ``3-say_my_name`` module
+==============================
+
+Import the function::
+
+    >>> say_my_name = __import__('3-say_my_name').say_my_name
+
+Printing a full name::
+
+    >>> say_my_name("John", "Smith")
+    My name is John Smith
+
+    >>> say_my_name("Walter", "White")
+    My name is Walter White
+
+Using the default value for ``last_name`` (note the trailing space
+before the newline, captured here explicitly to avoid it being
+silently stripped)::
+
+    >>> import io, sys
+    >>> captured = io.StringIO()
+    >>> old_stdout = sys.stdout
+    >>> sys.stdout = captured
+    >>> say_my_name("Bob")
+    >>> sys.stdout = old_stdout
+    >>> captured.getvalue()
+    'My name is Bob \n'
+
+Both names as empty strings::
+
+    >>> captured = io.StringIO()
+    >>> sys.stdout = captured
+    >>> say_my_name("", "")
+    >>> sys.stdout = old_stdout
+    >>> captured.getvalue()
+    'My name is  \n'
+
+``first_name`` must be a string::
+
+    >>> say_my_name(12, "White")
+    Traceback (most recent call last):
+    TypeError: first_name must be a string
+
+    >>> say_my_name(None, "White")
+    Traceback (most recent call last):
+    TypeError: first_name must be a string
+
+    >>> say_my_name(["John"], "White")
+    Traceback (most recent call last):
+    TypeError: first_name must be a string
+
+``last_name`` must be a string::
+
+    >>> say_my_name("John", 12)
+    Traceback (most recent call last):
+    TypeError: last_name must be a string
+
+    >>> say_my_name("John", None)
+    Traceback (most recent call last):
+    TypeError: last_name must be a string
+
+    >>> say_my_name("John", ["Smith"])
+    Traceback (most recent call last):
+    TypeError: last_name must be a string
