@@ -4,7 +4,7 @@ from models.rectangle import Rectangle
 
 
 class Square(Rectangle):
-    """Represent a square, a special rectangle with equal sides."""
+    """Represent a square, inherits from Rectangle."""
 
     def __init__(self, size, x=0, y=0, id=None):
         """Initialize a new Square.
@@ -33,11 +33,11 @@ class Square(Rectangle):
             self.id, self.x, self.y, self.width)
 
     def update(self, *args, **kwargs):
-        """Update attributes via no-keyword or key-worded arguments.
+        """Update attributes via *args or **kwargs.
 
         Args:
-            *args: New attribute values in order: id, size, x, y.
-            **kwargs: New attribute values by name.
+            *args (ints): New attribute values in order: id, size, x, y.
+            **kwargs (dict): New key/value pairs of attributes.
         """
         if args and len(args) > 0:
             attrs = ["id", "size", "x", "y"]

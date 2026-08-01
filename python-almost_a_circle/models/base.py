@@ -1,13 +1,12 @@
 #!/usr/bin/python3
-"""Defines the Base class, the root of all other classes in this project."""
+"""Defines the Base class, the base of all other classes in this project."""
 import json
 
 
 class Base:
-    """Manage the id attribute for all future classes.
+    """Manage the id attribute of all future classes.
 
-    This class avoids duplicating the same id-management code (and, by
-    extension, the same bugs) in every other class of this project.
+    This class will be the base of all other classes in this project.
     """
 
     __nb_objects = 0
@@ -26,7 +25,7 @@ class Base:
 
     @staticmethod
     def to_json_string(list_dictionaries):
-        """Return the JSON string representation of a list of dictionaries.
+        """Return the JSON string representation of list_dictionaries.
 
         Args:
             list_dictionaries (list): A list of dictionaries.
@@ -76,7 +75,10 @@ class Base:
 
     @classmethod
     def load_from_file(cls):
-        """Return a list of instances loaded from <Class name>.json."""
+        """Return a list of instances loaded from a JSON file.
+
+        The filename is `<Class name>.json`.
+        """
         filename = "{}.json".format(cls.__name__)
         try:
             with open(filename, "r") as f:

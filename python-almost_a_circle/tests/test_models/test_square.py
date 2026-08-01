@@ -1,158 +1,237 @@
 #!/usr/bin/python3
-"""Unit tests for the Square class."""
+"""Unittests for models.square.Square."""
+import io
+import sys
 import unittest
-from io import StringIO
-from unittest.mock import patch
 from models.base import Base
 from models.rectangle import Rectangle
 from models.square import Square
 
 
-class TestSquare_instantiation(unittest.TestCase):
-    """Unit tests for instantiation of the Square class."""
+class TestSquareInstantiation(unittest.TestCase):
+    """Unittests for testing instantiation of the Square class."""
 
-    def test_is_rectangle(self):
+    def setUp(self):
+        """Reset the Base __nb_objects counter before each test."""
+        Base._Base__nb_objects = 0
+
+    def test_is_rectangle_instance(self):
+        """Test that a Square is an instance of Rectangle."""
         self.assertIsInstance(Square(5), Rectangle)
 
-    def test_is_base(self):
+    def test_is_base_instance(self):
+        """Test that a Square is an instance of Base."""
         self.assertIsInstance(Square(5), Base)
 
     def test_size_only(self):
+        """Test instantiation with only size."""
         s = Square(5)
         self.assertEqual((s.width, s.height, s.x, s.y), (5, 5, 0, 0))
 
-    def test_size_x(self):
+    def test_size_and_x(self):
+        """Test instantiation with size and x."""
         s = Square(2, 2)
         self.assertEqual((s.width, s.height, s.x, s.y), (2, 2, 2, 0))
 
     def test_size_x_y(self):
+        """Test instantiation with size, x and y."""
         s = Square(3, 1, 3)
         self.assertEqual((s.width, s.height, s.x, s.y), (3, 3, 1, 3))
 
-    def test_id_arg(self):
+    def test_size_x_y_id(self):
+        """Test instantiation with an explicit id."""
         s = Square(3, 1, 3, 12)
         self.assertEqual(s.id, 12)
 
-    def test_module_docstring(self):
-        import models.square
-        self.assertIsNotNone(models.square.__doc__)
+    def test_no_new_attributes(self):
+        """Test that Square does not define new attributes."""
+        s = Square(5)
+        self.assertEqual(
+            set(vars(s).keys()),
+            {"_Rectangle__width", "_Rectangle__height",
+             "_Rectangle__x", "_Rectangle__y", "id"})
 
-    def test_class_docstring(self):
-        self.assertIsNotNone(Square.__doc__)
 
-    def test_validation_inherited_type(self):
+class TestSquareValidation(unittest.TestCase):
+    """Unittests for validation inherited from Rectangle."""
+
+    def test_size_not_int(self):
+        """Test that a non-int size raises TypeError."""
         with self.assertRaisesRegex(TypeError, "width must be an integer"):
             Square("5")
 
-    def test_validation_inherited_value(self):
+    def test_size_zero(self):
+        """Test that a size of 0 raises ValueError."""
         with self.assertRaisesRegex(ValueError, "width must be > 0"):
-            Square(-5)
+            Square(0)
+
+    def test_size_negative(self):
+        """Test that a negative size raises ValueError."""
+        with self.assertRaisesRegex(ValueError, "width must be > 0"):
+            Square(-1)
+
+    def test_x_negative(self):
+        """Test that a negative x raises ValueError."""
+        with self.assertRaisesRegex(ValueError, "x must be >= 0"):
+            Square(5, -1)
+
+    def test_y_negative(self):
+        """Test that a negative y raises ValueError."""
+        with self.assertRaisesRegex(ValueError, "y must be >= 0"):
+            Square(5, 0, -1)
 
 
-class TestSquare_area(unittest.TestCase):
-    """Unit tests for Square.area (inherited from Rectangle)."""
-
-    def test_area(self):
-        self.assertEqual(Square(5).area(), 25)
-        self.assertEqual(Square(2, 2).area(), 4)
-
-
-class TestSquare_display(unittest.TestCase):
-    """Unit tests for Square.display (inherited from Rectangle)."""
-
-    def test_display(self):
-        s = Square(2)
-        with patch("sys.stdout", new=StringIO()) as f:
-            s.display()
-        self.assertEqual(f.getvalue(), "##\n##\n")
-
-    def test_display_with_offset(self):
-        s = Square(3, 1, 3)
-        with patch("sys.stdout", new=StringIO()) as f:
-            s.display()
-        self.assertEqual(f.getvalue(), "\n\n\n ###\n ###\n ###\n")
-
-
-class TestSquare_str(unittest.TestCase):
-    """Unit tests for Square.__str__."""
-
-    def test_str(self):
-        s = Square(5, 0, 0, 1)
-        self.assertEqual(str(s), "[Square] (1) 0/0 - 5")
-
-    def test_str_with_pos(self):
-        s = Square(3, 1, 3, 5)
-        self.assertEqual(str(s), "[Square] (5) 1/3 - 3")
-
-
-class TestSquare_size(unittest.TestCase):
-    """Unit tests for the Square.size getter/setter."""
+class TestSquareSize(unittest.TestCase):
+    """Unittests for the size getter/setter of the Square class."""
 
     def test_size_getter(self):
+        """Test that the size getter returns width."""
         s = Square(5)
         self.assertEqual(s.size, 5)
 
     def test_size_setter(self):
+        """Test that the size setter updates width and height."""
         s = Square(5)
         s.size = 10
         self.assertEqual((s.width, s.height), (10, 10))
 
-    def test_size_setter_type_error(self):
+    def test_size_setter_invalid_type(self):
+        """Test that an invalid size type raises TypeError."""
         s = Square(5)
         with self.assertRaisesRegex(TypeError, "width must be an integer"):
             s.size = "9"
 
-    def test_size_setter_value_error(self):
+    def test_size_setter_invalid_value(self):
+        """Test that an invalid size value raises ValueError."""
         s = Square(5)
         with self.assertRaisesRegex(ValueError, "width must be > 0"):
-            s.size = -1
+            s.size = -3
 
 
-class TestSquare_update(unittest.TestCase):
-    """Unit tests for Square.update."""
+class TestSquareStr(unittest.TestCase):
+    """Unittests for the __str__ method of the Square class."""
 
-    def test_update_args(self):
+    def test_str(self):
+        """Test the string representation of a Square."""
+        Base._Base__nb_objects = 0
+        s = Square(5)
+        self.assertEqual(str(s), "[Square] (1) 0/0 - 5")
+
+    def test_str_with_position(self):
+        """Test the string representation with x and y set."""
+        s = Square(3, 1, 3, 3)
+        self.assertEqual(str(s), "[Square] (3) 1/3 - 3")
+
+
+class TestSquareArea(unittest.TestCase):
+    """Unittests for the area method of the Square class."""
+
+    def test_area(self):
+        """Test the area of a Square."""
+        self.assertEqual(Square(5).area(), 25)
+
+
+class TestSquareDisplay(unittest.TestCase):
+    """Unittests for the display method of the Square class."""
+
+    def test_display(self):
+        """Test the display output of a Square."""
+        captured = io.StringIO()
+        sys.stdout = captured
+        Square(2).display()
+        sys.stdout = sys.__stdout__
+        self.assertEqual(captured.getvalue(), "##\n##\n")
+
+
+class TestSquareUpdateArgs(unittest.TestCase):
+    """Unittests for the update method of Square using *args."""
+
+    def setUp(self):
+        """Reset the Base __nb_objects counter before each test."""
+        Base._Base__nb_objects = 0
+
+    def test_update_id(self):
+        """Test updating only the id."""
         s = Square(5)
         s.update(10)
         self.assertEqual(s.id, 10)
+
+    def test_update_id_size(self):
+        """Test updating id and size."""
+        s = Square(5)
         s.update(1, 2)
-        self.assertEqual(s.size, 2)
-        s.update(1, 2, 3)
-        self.assertEqual(s.x, 3)
+        self.assertEqual((s.id, s.size), (1, 2))
+
+    def test_update_all(self):
+        """Test updating id, size, x and y via args."""
+        s = Square(5)
         s.update(1, 2, 3, 4)
-        self.assertEqual(s.y, 4)
+        self.assertEqual(str(s), "[Square] (1) 3/4 - 2")
+
+
+class TestSquareUpdateKwargs(unittest.TestCase):
+    """Unittests for the update method of Square using **kwargs."""
+
+    def setUp(self):
+        """Reset the Base __nb_objects counter before each test."""
+        Base._Base__nb_objects = 0
 
     def test_update_kwargs(self):
+        """Test updating attributes via kwargs."""
         s = Square(5)
-        s.update(x=12)
-        self.assertEqual(s.x, 12)
-        s.update(size=7, y=1)
-        self.assertEqual((s.size, s.y), (7, 1))
         s.update(size=7, id=89, y=1)
-        self.assertEqual(s.id, 89)
+        self.assertEqual(str(s), "[Square] (89) 0/1 - 7")
 
-    def test_update_no_args_no_kwargs(self):
-        s = Square(5, 1, 1, 1)
+    def test_update_no_args_kwargs(self):
+        """Test that update with nothing changes nothing."""
+        s = Square(5)
         s.update()
-        self.assertEqual((s.id, s.size, s.x, s.y), (1, 5, 1, 1))
+        self.assertEqual(str(s), "[Square] (1) 0/0 - 5")
 
 
-class TestSquare_to_dictionary(unittest.TestCase):
-    """Unit tests for Square.to_dictionary."""
+class TestSquareToDictionary(unittest.TestCase):
+    """Unittests for the to_dictionary method of the Square class."""
 
-    def test_to_dictionary(self):
-        s1 = Square(10, 2, 1)
-        d = s1.to_dictionary()
-        self.assertEqual(d, {"id": s1.id, "size": 10, "x": 2, "y": 1})
+    def test_to_dictionary_keys(self):
+        """Test that to_dictionary returns the correct keys."""
+        s = Square(10, 2, 1)
+        d = s.to_dictionary()
+        self.assertEqual(set(d.keys()), {"id", "size", "x", "y"})
 
-    def test_to_dictionary_type(self):
-        self.assertIsInstance(Square(1).to_dictionary(), dict)
+    def test_to_dictionary_values(self):
+        """Test that to_dictionary returns the correct values."""
+        s = Square(10, 2, 1, 5)
+        expected = {"id": 5, "size": 10, "x": 2, "y": 1}
+        self.assertEqual(s.to_dictionary(), expected)
 
-    def test_to_dictionary_update_roundtrip(self):
+    def test_to_dictionary_roundtrip(self):
+        """Test using to_dictionary output to update another square."""
         s1 = Square(10, 2, 1)
         s2 = Square(1, 1)
         s2.update(**s1.to_dictionary())
         self.assertEqual(str(s1), str(s2))
+
+
+class TestSquareDocs(unittest.TestCase):
+    """Unittests for documentation of the Square class."""
+
+    def test_module_docstring(self):
+        """Test that the module has a docstring."""
+        self.assertIsNotNone(__import__(
+            "models.square", fromlist=["square"]).__doc__)
+
+    def test_class_docstring(self):
+        """Test that the Square class has a docstring."""
+        self.assertIsNotNone(Square.__doc__)
+
+    def test_methods_docstrings(self):
+        """Test that all Square methods have docstrings."""
+        methods = [
+            Square.__init__, Square.__str__,
+            Square.update, Square.to_dictionary,
+        ]
+        for method in methods:
+            self.assertIsNotNone(method.__doc__)
 
 
 if __name__ == "__main__":
