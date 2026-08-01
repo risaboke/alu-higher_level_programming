@@ -68,14 +68,10 @@ Create an instance:
     ValueError: distance must be greater than 0
 
 ``integer_validator`` requires both a name and a value:
-    >>> try:
-    ...     bg.integer_validator()
-    ... except TypeError:
-    ...     print("TypeError raised")
-    TypeError raised
+    >>> bg.integer_validator() # doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+    TypeError
 
-    >>> try:
-    ...     bg.integer_validator("age")
-    ... except TypeError:
-    ...     print("TypeError raised")
-    TypeError raised
+    >>> bg.integer_validator("age") # doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+    TypeError
